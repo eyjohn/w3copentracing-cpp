@@ -9,4 +9,4 @@ Version: @PROJECT_VERSION@
 
 Requires:
 Libs: -L${libdir} -lw3copentracing -lopentracing
-Cflags: -std=c++17 -I${includedir}
+Cflags: -I${includedir}
