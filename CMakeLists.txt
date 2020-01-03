@@ -4,14 +4,15 @@ project(w3copentracing VERSION 1.0.0 DESCRIPTION "A partial implementation of an
 
 include(GNUInstallDirs)
 
-set(CMAKE_CXX_STANDARD 17)
-
 include_directories(include)
 
-add_library(w3copentracing STATIC src/tracer.cpp)
+file(GLOB_RECURSE SOURCES LIST_DIRECTORIES false src/*.h src/*.cpp)
+file(GLOB_RECURSE HEADERS LIST_DIRECTORIES false include/*.h)
+
+add_library(w3copentracing STATIC ${SOURCES})
 set_target_properties(w3copentracing PROPERTIES
     VERSION ${PROJECT_VERSION}
-    PUBLIC_HEADER "include/w3copentracing/tracer.h")
+    PUBLIC_HEADER "${HEADERS}")
 
 configure_file(w3copentracing.pc.in w3copentracing.pc @ONLY)
 
