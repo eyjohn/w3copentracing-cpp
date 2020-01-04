@@ -44,6 +44,8 @@ expected<void> InjectImpl(const opentracing::SpanContext& span_context,
   return {};
 }
 
+}  // namespace
+
 template <class Carrier>
 expected<unique_ptr<opentracing::SpanContext>> ExtractImpl(Carrier& reader) {
   return {};
@@ -69,4 +71,4 @@ expected<unique_ptr<opentracing::SpanContext>> Carrier::Extract(
   return Extract(dynamic_cast<const TextMapReader&>(reader));
 }
 
-}  // namespace
+}  // namespace w3copentracing
