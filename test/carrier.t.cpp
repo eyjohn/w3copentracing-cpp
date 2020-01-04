@@ -62,6 +62,16 @@ TYPED_TEST(CarrierTypedWriter, InjectSpanWithBaggage) {
   Carrier::Inject(span_context, mock_writer);
 }
 
+TYPED_TEST(CarrierTypedWriter, InjectPropagateFail) {
+  SpanContext span_context{};
+  TypeParam mock_writer;
+  EXPECT_CALL(mock_writer, Set(_, _))
+      .WillOnce(Return(ot::make_unexpected(ot::invalid_carrier_error)));
+  auto res = Carrier::Inject(span_context, mock_writer);
+  ASSERT_FALSE(res);
+  EXPECT_THAT(res.error(), Eq(ot::invalid_carrier_error));
+}
+
 class MockHTTPHeadersReader : public ot::HTTPHeadersReader {
  public:
   MOCK_CONST_METHOD1(LookupKey, ot::expected<ot::string_view>(ot::string_view));
@@ -174,4 +184,35 @@ TYPED_TEST(CarrierTypedReader, ExtractFallbackToForeach) {
                              SpanContext::SpanID{2},
                              true,
                              {{"key1", "val1"}, {"key2", "val2"}}}));
+}
+
+TYPED_TEST(CarrierTypedReader, ExtractPropagateFail) {
+  TypeParam mock_reader;
+  EXPECT_CALL(mock_reader, LookupKey(_))
+      .WillOnce(Return(ot::make_unexpected(ot::invalid_carrier_error)));
+
+  auto res = Carrier::Extract(mock_reader);
+  ASSERT_FALSE(res);
+  EXPECT_THAT(res.error(), Eq(ot::invalid_carrier_error));
+}
+
+TYPED_TEST(CarrierTypedReader, ExtractForeachKeyPropagateFail) {
+  TypeParam mock_reader;
+  EXPECT_CALL(mock_reader, LookupKey({"trace-parent"}))
+      .WillOnce(
+          Return(ot::make_unexpected(ot::lookup_key_not_supported_error)));
+  EXPECT_CALL(mock_reader, ForeachKey(_))
+      .WillOnce(Return(ot::make_unexpected(ot::invalid_carrier_error)));
+  auto res = Carrier::Extract(mock_reader);
+  ASSERT_FALSE(res);
+  EXPECT_THAT(res.error(), Eq(ot::invalid_carrier_error));
+}
+
+TYPED_TEST(CarrierTypedReader, ExtractFail) {
+  TypeParam mock_reader;
+  EXPECT_CALL(mock_reader, LookupKey({"trace-parent"}))
+      .WillOnce(Return(ot::expected<ot::string_view>{"01"}));
+  auto res = Carrier::Extract(mock_reader);
+  ASSERT_FALSE(res);
+  EXPECT_THAT(res.error(), Eq(ot::span_context_corrupted_error));
 }
