@@ -23,7 +23,6 @@ install(TARGETS w3copentracing
 install(FILES ${CMAKE_BINARY_DIR}/w3copentracing.pc
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
-
 enable_testing()
 
 add_subdirectory(test)
