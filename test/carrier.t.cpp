@@ -5,21 +5,12 @@
 #include <w3copentracing/span_context.h>
 
 #include "carrier.h"
+#include "mock_writers.h"
 
 using namespace std;
 using namespace w3copentracing;
 using namespace testing;
 namespace ot = opentracing;
-
-class MockHTTPHeadersWriter : public ot::HTTPHeadersWriter {
- public:
-  MOCK_CONST_METHOD2(Set, ot::expected<void>(ot::string_view, ot::string_view));
-};
-
-class MockTextMapWriter : public ot::TextMapWriter {
- public:
-  MOCK_CONST_METHOD2(Set, ot::expected<void>(ot::string_view, ot::string_view));
-};
 
 template <typename T>
 class CarrierTypedWriter : public Test {};
@@ -71,24 +62,6 @@ TYPED_TEST(CarrierTypedWriter, InjectPropagateFail) {
   ASSERT_FALSE(res);
   EXPECT_THAT(res.error(), Eq(ot::invalid_carrier_error));
 }
-
-class MockHTTPHeadersReader : public ot::HTTPHeadersReader {
- public:
-  MOCK_CONST_METHOD1(LookupKey, ot::expected<ot::string_view>(ot::string_view));
-  MOCK_CONST_METHOD1(
-      ForeachKey,
-      ot::expected<void>(
-          std::function<ot::expected<void>(ot::string_view, ot::string_view)>));
-};
-
-class MockTextMapReader : public ot::TextMapReader {
- public:
-  MOCK_CONST_METHOD1(LookupKey, ot::expected<ot::string_view>(ot::string_view));
-  MOCK_CONST_METHOD1(
-      ForeachKey,
-      ot::expected<void>(
-          std::function<ot::expected<void>(ot::string_view, ot::string_view)>));
-};
 
 template <typename T>
 class CarrierTypedReader : public Test {};
