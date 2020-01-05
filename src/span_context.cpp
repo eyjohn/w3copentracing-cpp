@@ -1,6 +1,7 @@
 #include <w3copentracing/span_context.h>
 
 #include <algorithm>
+#include <climits>
 #include <iomanip>
 #include <random>
 #include <sstream>
