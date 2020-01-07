@@ -14,7 +14,8 @@ find_package(OpenTracing REQUIRED)
 add_library(w3copentracing STATIC ${SOURCES})
 set_target_properties(w3copentracing PROPERTIES
     VERSION ${PROJECT_VERSION}
-    PUBLIC_HEADER "${HEADERS}")
+    PUBLIC_HEADER "${HEADERS}"
+    POSITION_INDEPENDENT_CODE ON)
 
 configure_file(w3copentracing.pc.in w3copentracing.pc @ONLY)
 
