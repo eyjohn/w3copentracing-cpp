@@ -37,15 +37,20 @@ std::string to_hex(const std::array<uint8_t, N>& data) {
 
 }  // namespace
 
-SpanContext SpanContext::Generate(bool sampled, const Baggage& baggage) {
-  SpanContext ctx{{}, {}, sampled, baggage};
+SpanContext::SpanID SpanContext::GenerateSpanID() {
+  SpanID span_id;
   do {
-    generate_random_bytes(ctx.trace_id);
-  } while (ctx.trace_id == TraceID{});
+    generate_random_bytes(span_id);
+  } while (span_id == SpanID{});
+  return span_id;
+}
+
+SpanContext::TraceID SpanContext::GenerateTraceID() {
+  TraceID trace_id;
   do {
-    generate_random_bytes(ctx.span_id);
-  } while (ctx.span_id == SpanID{});
-  return ctx;
+    generate_random_bytes(trace_id);
+  } while (trace_id == TraceID{});
+  return trace_id;
 }
 
 SpanContext::SpanContext(const TraceID& trace_id_, const SpanID& span_id_,

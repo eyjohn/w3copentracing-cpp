@@ -18,8 +18,11 @@ class SpanContext : public opentracing::SpanContext {
   using SpanID = std::array<uint8_t, 8>;
   using Baggage = std::map<std::string, std::string>;
 
-  // Generate a SpanContext with randomised trace and span Ids
-  static SpanContext Generate(bool sampled = true, const Baggage& baggage = {});
+  // Generate a SpanID with randomised bytes
+  static SpanID GenerateSpanID();
+
+  // Generate a SpanID with randomised bytes
+  static TraceID GenerateTraceID();
 
   // Make a copy of this context
   std::unique_ptr<opentracing::SpanContext> Clone() const noexcept override;

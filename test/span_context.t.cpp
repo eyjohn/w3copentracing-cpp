@@ -27,10 +27,14 @@ TEST(SpanContext, InstantiateDefault) {
   EXPECT_THAT(span.baggage, Eq(SpanContext::Baggage{}));
 }
 
-TEST(SpanContext, Generate) {
-  auto span = SpanContext::Generate();
-  EXPECT_THAT(span.trace_id, Ne(SpanContext::TraceID{}));
-  EXPECT_THAT(span.span_id, Ne(SpanContext::SpanID{}));
+TEST(SpanContext, GenerateSpanID) {
+  auto id = SpanContext::GenerateSpanID();
+  EXPECT_THAT(id, Ne(SpanContext::SpanID{}));
+}
+
+TEST(SpanContext, GenerateTraceID) {
+  auto id = SpanContext::GenerateTraceID();
+  EXPECT_THAT(id, Ne(SpanContext::TraceID{}));
 }
 
 TEST(SpanContext, ToTraceID) {

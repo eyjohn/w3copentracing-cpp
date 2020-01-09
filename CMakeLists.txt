@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(w3copentracing VERSION 1.0.0 DESCRIPTION "A partial implementation of an OpenTracing tracer with W3C compliance.")
+project(w3copentracing VERSION 1.0.1 DESCRIPTION "A partial implementation of an OpenTracing tracer with W3C compliance.")
 
 include(GNUInstallDirs)
 
